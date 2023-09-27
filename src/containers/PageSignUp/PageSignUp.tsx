@@ -1,4 +1,4 @@
-import React, { FC,Fragment,useState,useEffect } from "react";
+import React, { FC, Fragment, useState, useEffect } from "react";
 import facebookSvg from "images/Facebook.svg";
 import twitterSvg from "images/Twitter.svg";
 import googleSvg from "images/Google.svg";
@@ -10,10 +10,10 @@ import { Redirect } from "react-router-dom";
 import Select from "shared/Select/Select";
 import { Dialog, Transition } from "@headlessui/react";
 import ButtonClose from "shared/ButtonClose/ButtonClose";
-import "./otpstyles.css"
+import "./otpstyles.css";
 import $ from "jquery";
 import jwt_decode from "jwt-decode";
-import Cookies from 'universal-cookie';
+import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
 export interface PageSignUpProps {
@@ -40,162 +40,166 @@ const loginSocials = [
 //const navigate = NavLink();
 
 const PageSignUp: FC<PageSignUpProps> = ({ className = "" }) => {
-  const [message, setmessage] = useState([])
-  const [mystyle, setstyle] = useState([])
-  const [countrydata, setcountrydata] = useState([])
-  const [phonenumber, setphonenumber] = useState([])
-  const [countrycode, setcountry] = useState([])
-  useEffect(()=>{
-    CountryApiData()
+  const [message, setmessage] = useState([]);
+  const [mystyle, setstyle] = useState([]);
+  const [countrydata, setcountrydata] = useState([]);
+  const [phonenumber, setphonenumber] = useState([]);
+  const [countrycode, setcountry] = useState([]);
+  useEffect(() => {
+    CountryApiData();
     google.accounts.id.initialize({
-      client_id:"843338204450-unpb8d9if6fbkipvmrhi9b8krvn52678.apps.googleusercontent.com",
-      callback:handleCallbackResponse
+      client_id:
+        "843338204450-unpb8d9if6fbkipvmrhi9b8krvn52678.apps.googleusercontent.com",
+      callback: handleCallbackResponse,
     });
-  
-    google.accounts.id.renderButton(
-      document.getElementById("signindiv"),
-      {theme:"dark",size:"large"}
-    )
-   }, [])
-   let [isOpenModalPricelist, setIsOpenModalPricelist] = useState(false);
-   function closeModalPricelist() {
-     setIsOpenModalPricelist(false);
-   }
-   function openModalPricelist() {
-     setIsOpenModalPricelist(true);
-   }
-   function CountryApiData()
-  {
-    var url = 'https://admin.vacationsaga.com/api/country_api';
-	  var response = fetch(url).then(data=> data.json())
-    response.then((data)=>{
-      if(data.length){
-        setcountrydata(data);
-        console.log('country data', data)
-      }
-    }).catch(e=>{
-      console.log(e)
-    })
-  }
-var url='';
-function handleClick(event) {
-	event.preventDefault();
-  let phone=$("#phone").val();
-  let country = $('#country :selected').val();
-  setcountry(country)
-  setphonenumber(phone)
-    const data = new FormData(event.target);
-    
-    // Send data to the backend via POST
-   var url = fetch('https://admin.vacationsaga.com/api/do_owner_register', {  // Enter your IP address here
 
-      method: 'POST', 
-      mode: 'cors', 
-      body: data // body data type must match "Content-Type" header
-     
-    }).then((response) => response.json())
-    .then((responseJson) => {
-      //alert(responseJson);
-      if(responseJson==1)
-      {
-        let msg='Email Already Registered With Us!';
+    google.accounts.id.renderButton(document.getElementById("signindiv"), {
+      theme: "dark",
+      size: "large",
+    });
+  }, []);
+  let [isOpenModalPricelist, setIsOpenModalPricelist] = useState(false);
+  function closeModalPricelist() {
+    setIsOpenModalPricelist(false);
+  }
+  function openModalPricelist() {
+    setIsOpenModalPricelist(true);
+  }
+  function CountryApiData() {
+    var url = "https://admin.vacationsaga.com/api/country_api";
+    var response = fetch(url).then((data) => data.json());
+    response
+      .then((data) => {
+        if (data.length) {
+          setcountrydata(data);
+          console.log("country data", data);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+  var url = "";
+  function handleClick(event) {
+    event.preventDefault();
+    let phone = $("#phone").val();
+    let country = $("#country :selected").val();
+    setcountry(country);
+    setphonenumber(phone);
+    const data = new FormData(event.target);
+
+    // Send data to the backend via POST
+    var url = fetch("https://admin.vacationsaga.com/api/do_owner_register", {
+      // Enter your IP address here
+
+      method: "POST",
+      mode: "cors",
+      body: data, // body data type must match "Content-Type" header
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        //alert(responseJson);
+        if (responseJson == 1) {
+          let msg = "Email Already Registered With Us!";
+          setmessage(msg);
+          let mystyle = {
+            color: "#a94442",
+            backgroundColor: "#f2dede",
+            padding: "10px",
+            fontFamily: "Arial",
+          };
+          setstyle(mystyle);
+        } else {
+          const cookies = new Cookies();
+          cookies.set("ownerid", responseJson);
+          cookies.remove("travellerid");
+          window.location.href = "account";
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        let msg = "Oops error";
         setmessage(msg);
         let mystyle = {
           color: "#a94442",
           backgroundColor: "#f2dede",
           padding: "10px",
-          fontFamily: "Arial"
+          fontFamily: "Arial",
         };
-        setstyle(mystyle)
-      }
-      else
-      {
-        openModalPricelist()
-      //const cookies = new Cookies();
-//cookies.set('ownerid',responseJson);
-//window.location="phone-verification";
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      let msg='Oops error';
-      setmessage(msg);
-      let mystyle = {
-        color: "#a94442",
-        backgroundColor: "#f2dede",
-        padding: "10px",
-        fontFamily: "Arial"
-      };
-      setstyle(mystyle)
-    });
+        setstyle(mystyle);
+      });
   }
 
-  function submitotp(event) {
-    event.preventDefault();
-      const data = new FormData(event.target);
-     
-     let url = fetch('https://admin.vacationsaga.com/api/submit_otpforowner', {  // Enter your IP address here
-  
-        method: 'POST', 
-        mode:'cors',
-        body: data
-       
-      }).then((response) => response.json())
-      .then((responseJson) => {
-        
-      //  openModalPricelist()
-        //alert(responseJson);
-        if(responseJson==1)
-        {
-          let msg='Invalid OTP';
-          setmessage(msg);
-          let mystyle = {
-            color: "#a94442",
-            backgroundColor: "#f2dede",
-            padding: "10px",
-            fontFamily: "Arial"
-          };
-          setstyle(mystyle)
-        }
-        else
-        {
-        
-  cookies.set('ownerid',responseJson);
-  window.location='account';
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        let msg='Oops error';
-          setmessage(msg);
-          let mystyle = {
-            color: "#a94442",
-            backgroundColor: "#f2dede",
-            padding: "10px",
-            fontFamily: "Arial"
-          };
-          setstyle(mystyle)
-      });
-    }
+  // function submitotp(event) {
+  //   event.preventDefault();
+  //   const data = new FormData(event.target);
 
-    function handleCallbackResponse(response)
-  {
-   console.log(response.credential);
-   let obj = jwt_decode(response.credential)
-   console.log(obj)
-   
-   let url = 'https://admin.vacationsaga.com/api/ownergooglelogin?name=' + obj.name + '&email=' + obj.email;
-    let res = fetch(url).then(data => data.json()).then(data => {
-      const cookies = new Cookies();
-cookies.set('ownerid',data);
-cookies.remove('travellerid');
-window.location="account";
-    }).catch(e => { console.log(e) })
+  //   let url = fetch("https://admin.vacationsaga.com/api/submit_otpforowner", {
+  //     // Enter your IP address here
+
+  //     method: "POST",
+  //     mode: "cors",
+  //     body: data,
+  //   })
+  //     .then((response) => response.json())
+  //     .then((responseJson) => {
+  //       //  openModalPricelist()
+  //       //alert(responseJson);
+  //       if (responseJson == 1) {
+  //         let msg = "Invalid OTP";
+  //         setmessage(msg);
+  //         let mystyle = {
+  //           color: "#a94442",
+  //           backgroundColor: "#f2dede",
+  //           padding: "10px",
+  //           fontFamily: "Arial",
+  //         };
+  //         setstyle(mystyle);
+  //       } else {
+  //         cookies.set("ownerid", responseJson);
+  //         window.location = "account";
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       let msg = "Oops error";
+  //       setmessage(msg);
+  //       let mystyle = {
+  //         color: "#a94442",
+  //         backgroundColor: "#f2dede",
+  //         padding: "10px",
+  //         fontFamily: "Arial",
+  //       };
+  //       setstyle(mystyle);
+  //     });
+  // }
+
+  function handleCallbackResponse(response) {
+    console.log(response.credential);
+    let obj = jwt_decode(response.credential);
+    console.log(obj);
+
+    let url =
+      "https://admin.vacationsaga.com/api/ownergooglelogin?name=" +
+      obj.name +
+      "&email=" +
+      obj.email;
+    let res = fetch(url)
+      .then((data) => data.json())
+      .then((data) => {
+        const cookies = new Cookies();
+        cookies.set("ownerid", data);
+        cookies.remove("travellerid");
+        window.location = "account";
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
   const renderMotalPricelist = () => {
-    let otpstyle={
-      'margin-bottom': '35px',
-    }
+    let otpstyle = {
+      "margin-bottom": "35px",
+    };
     return (
       <Transition appear show={isOpenModalPricelist} as={Fragment}>
         <Dialog
@@ -203,7 +207,7 @@ window.location="account";
           className="fixed inset-0 z-50 overflow-y-auto"
           onClose={closeModalPricelist}
         >
-          <div className="min-h-screen px-4 text-center">
+          {/* <div className="min-h-screen px-4 text-center">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -216,7 +220,6 @@ window.location="account";
               <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-40" />
             </Transition.Child>
 
-            {/* This element is to trick the browser into centering the modal contents. */}
             <span
               className="inline-block h-screen align-middle"
               aria-hidden="true"
@@ -239,39 +242,66 @@ window.location="account";
                       className="text-lg font-medium leading-6 text-gray-900"
                       id="headlessui-dialog-title-70"
                     >
-                     Confirm your number
+                      Confirm your number
                     </h3>
                     <span className="absolute left-3 top-3">
                       <ButtonClose onClick={closeModalPricelist} />
                     </span>
                   </div>
                   <div className="px-8 overflow-auto text-neutral-700 dark:text-neutral-300 divide-y divide-neutral-200">
-                 <form  method="post" onSubmit={submitotp}>
-                  <label className="block">
-            <span className="flex justify-between items-center text-neutral-800 dark:text-neutral-200">
-              <br/>
-            Enter the code we've sent via SMS to +{countrycode+phonenumber}:
-      <br/>
-            </span>
-            <Input type="text" id="partitioned" required name='otp' maxlength="4" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  onKeyPress="if(this.value.length==4) return false;" className="location-search-input block w-full bg-transparent border-none focus:ring-0 p-0 focus:outline-none focus:placeholder-neutral-300 xl:text-lg font-semibold placeholder-neutral-800 dark:placeholder-neutral-200 truncate" />
-             <input type='hidden' name='country' value={countrycode}></input>
-             <input type='hidden' name='phone' value={phonenumber}></input>
-          </label>
-          <br/>
-          <span style={mystyle}>{message}</span>
-          <ButtonPrimary style={otpstyle} type="submit">Continue</ButtonPrimary>
-          <br/>
-          </form>
+                    <form method="post" onSubmit={submitotp}>
+                      <label className="block">
+                        <span className="flex justify-between items-center text-neutral-800 dark:text-neutral-200">
+                          <br />
+                          Enter the code we've sent via SMS to +
+                          {countrycode + phonenumber}:
+                          <br />
+                        </span>
+                        <Input
+                          type="text"
+                          id="partitioned"
+                          required
+                          name="otp"
+                          maxLength="4"
+                          onInput={(e) => {
+                            e.currentTarget.value = e.currentTarget.value
+                              .replace(/[^0-9.]/g, "")
+                              .replace(/(\..*)\./g, "$1");
+                          }}
+                          onKeyPress={(e) => {
+                            if (e.currentTarget.value.length === 4)
+                              return false;
+                          }}
+                          className="location-search-input block w-full bg-transparent border-none focus:ring-0 p-0 focus:outline-none focus:placeholder-neutral-300 xl:text-lg font-semibold placeholder-neutral-800 dark:placeholder-neutral-200 truncate"
+                        />
+                        <input
+                          type="hidden"
+                          name="country"
+                          value={countrycode}
+                        ></input>
+                        <input
+                          type="hidden"
+                          name="phone"
+                          value={phonenumber}
+                        ></input>
+                      </label>
+                      <br />
+                      <span style={mystyle}>{message}</span>
+                      <ButtonPrimary style={otpstyle} type="submit">
+                        Continue
+                      </ButtonPrimary>
+                      <br />
+                    </form>
                   </div>
-                 
                 </div>
               </div>
             </Transition.Child>
-          </div>
+          </div> */}
         </Dialog>
       </Transition>
     );
   };
+
   return (
     <div className={`nc-PageSignUp  ${className}`} data-nc-id="PageSignUp">
       <Helmet>
@@ -300,7 +330,9 @@ window.location="account";
               </a>
             ))*/}
 
-<center><div id="signindiv"></div></center>
+            <center>
+              <div id="signindiv"></div>
+            </center>
           </div>
           {/* OR 
           <div className="relative text-center">
@@ -310,19 +342,18 @@ window.location="account";
             <div className="absolute left-0 w-full top-1/2 transform -translate-y-1/2 border border-neutral-100 dark:border-neutral-800"></div>
           </div>
           {/* FORM */}
-          
-          
-          <form className="grid grid-cols-1 gap-6"  onSubmit={handleClick}>
-		  <label className="block">
+
+          <form className="grid grid-cols-1 gap-6" onSubmit={handleClick}>
+            <label className="block">
               <span className="text-neutral-800 dark:text-neutral-200">
                 Name
               </span>
               <Input
                 type="text"
                 className="mt-1"
-				id="oname"
-				name="oname"
-        required
+                id="oname"
+                name="oname"
+                required
               />
             </label>
             <label className="block">
@@ -332,42 +363,50 @@ window.location="account";
               <Input
                 type="email"
                 className="mt-1"
-				id="email"
-				name="email"
-        required
+                id="email"
+                name="email"
+                required
               />
             </label>
             <label className="block">
               <span className="text-neutral-800 dark:text-neutral-200">
                 Country/Region
               </span>
-              <Select name="country" id='country' required className="mt-1.5">
-                 <option value=''>--Select--</option>
-                { countrydata.map((item1)=>(
-                  <option value={item1.phonecode} >{item1.country_name}(+{item1.phonecode})</option>
+              <Select name="country" id="country" required className="mt-1.5">
+                <option value="">--Select--</option>
+                {countrydata.map((item1) => (
+                  <option value={item1.phonecode}>
+                    {item1.country_name}(+{item1.phonecode})
+                  </option>
                 ))}
-                  </Select>
+              </Select>
             </label>
-			 <label className="block">
+            <label className="block">
               <span className="text-neutral-800 dark:text-neutral-200">
                 Phone No
               </span>
               <Input
                 type="number"
                 className="mt-1"
-				id="phone"
-				name="phone"
-        required
+                id="phone"
+                name="phone"
+                required
               />
             </label>
             <label className="block">
               <span className="flex justify-between items-center text-neutral-800 dark:text-neutral-200">
                 Password
               </span>
-              <Input type="password" className="mt-1" id="password" required name="password" />
+              <Input
+                type="password"
+                className="mt-1"
+                id="password"
+                required
+                name="password"
+              />
             </label>
             <span style={mystyle}>{message}</span>
-            <ButtonPrimary type="submit" >Continue</ButtonPrimary>
+            <ButtonPrimary type="submit">Continue</ButtonPrimary>
           </form>
           {renderMotalPricelist()}
           {/* ==== */}
@@ -378,7 +417,6 @@ window.location="account";
         </div>
       </div>
     </div>
-    
   );
 };
 
