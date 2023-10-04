@@ -32,7 +32,7 @@
     "jquery": "^3.6.0",
     "jwt-decode": "^3.1.2",
     "moment": "^2.18.1",
-    "node-sass": "^7.0.3",
+    "node-sass": "^9.0.0",
     "otp-input-react": "^0.3.0",
     "rc-slider": "^9.7.4",
     "react": "^16.1.1",
